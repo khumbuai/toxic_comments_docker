@@ -9,6 +9,8 @@ fb_parser/__pycache__/
 venv/
 env/
 assets/*
+backend_flask/assets/*
 tmp
 migrations/*
 *.hdf5
+*.p

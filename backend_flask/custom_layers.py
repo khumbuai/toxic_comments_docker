@@ -20,6 +20,7 @@ class Attention(Layer):
         self.bias = bias
         self.step_dim = step_dim
         self.features_dim = 0
+        self.attention_weights = None
         super(Attention, self).__init__(**kwargs)
 
     def build(self, input_shape):
@@ -67,6 +68,8 @@ class Attention(Layer):
 
         a = K.expand_dims(a)
         weighted_input = x * a
+
+        self.attention_weights = a
         return K.sum(weighted_input, axis=1)
 
     def compute_output_shape(self, input_shape):
