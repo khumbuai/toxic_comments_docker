@@ -10,11 +10,12 @@ from io import StringIO
 from skimage.io import imsave
 import io
 import numpy as np
-from initialize_app import initialize
+from src.models.LSTM.predict import ToxicLSTMModel
+#from initialize_app import initialize
 
 app = Flask(__name__)
-predict_on_text = initialize()
-
+#predict_on_text = initialize()
+ToxicLSTM = ToxicLSTMModel()
 
 @app.route('/', methods=['POST', 'GET'])
 def predict():
@@ -43,6 +44,37 @@ def predict():
     except:
         abort(404)
 
+@app.route('/lstm', methods=['POST', 'GET'])
+def predict_lstm():
+    '''
+    :return: byte64 decoded colorized image
+    '''
+    try:
+        text = request.get_json()['text']
+        current_app.logger.info('Data type: %s', type(request.get_json()))
+        print(text)
+    except KeyError:
+        current_app.logger.info('Data type: %s', type(request.get_json()))
+        return jsonify(status_code='400', msg='Bad Request'), 400
+
+    current_app.logger.info('Data: %s', text)
+    #try:
+    toxicity = ToxicLSTM.predict(text)
+    #t2 = toxicity.to_list()
+    print(toxicity)
+    #print(t2)
+    #except:
+    #    return jsonify(status_code='400', msg='Text not understood'), 400
+
+    current_app.logger.info('Predictions: %s', toxicity)
+
+
+    #try:
+    return jsonify(toxicity)
+        #return send_file('colorized_img.jpg')
+    #except:
+    #    abort(404)
+
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5000)

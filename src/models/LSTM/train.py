@@ -11,8 +11,8 @@ from keras.callbacks import ModelCheckpoint
 
 # config
 
-EMBEDDING_FILE = "assets/crawl-300d-2M.vec"
-TRAIN_FILENAME = "assets/train.csv"
+EMBEDDING_FILE = "src/assets/crawl-300d-2M.vec"
+TRAIN_FILENAME = "src/assets/train.csv"
 categories = ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
 embed_size = 300
 max_features = 50000
@@ -26,7 +26,10 @@ train["comment_text"] = train["comment_text"].progress_apply(lambda x: preproces
 
 tk = Tokenizer(num_words = max_features, lower = True)
 tk.fit_on_texts(train["comment_text"])
+import pickle
 
+with open('src/models/LSTM/tokenizer.p','wb') as f:
+    pickle.dump(tk,f)
 X = tk.texts_to_sequences(train["comment_text"])
 X = pad_sequences(X,maxlen=maxlen)
 
