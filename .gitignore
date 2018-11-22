@@ -14,3 +14,5 @@ tmp
 migrations/*
 *.hdf5
 *.p
+*.vec
+*.csv
