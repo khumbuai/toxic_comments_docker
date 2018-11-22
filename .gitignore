@@ -16,3 +16,4 @@ migrations/*
 *.p
 *.vec
 *.csv
+src/assets/

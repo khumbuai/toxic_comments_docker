@@ -1,12 +1,13 @@
 import pandas as pd
 import numpy as np
 #todo change to relative path
-from models.LSTM.preprocess import preprocess
+from src.models.LSTM.preprocess import preprocess
 from tqdm import tqdm
 tqdm.pandas()
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-
+from src.models.LSTM.model import Lstm
+from keras.callbacks import ModelCheckpoint
 
 # config
 
@@ -14,8 +15,8 @@ EMBEDDING_FILE = "assets/crawl-300d-2M.vec"
 TRAIN_FILENAME = "assets/train.csv"
 categories = ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
 embed_size = 300
-max_features = 150000
-max_text_len = 150
+max_features = 50000
+maxlen = 150
 
 train = pd.read_csv(TRAIN_FILENAME).sample(frac=0.1)
 y = train[categories].values
@@ -27,7 +28,7 @@ tk = Tokenizer(num_words = max_features, lower = True)
 tk.fit_on_texts(train["comment_text"])
 
 X = tk.texts_to_sequences(train["comment_text"])
-X = pad_sequences(X,maxlen=max_text_len)
+X = pad_sequences(X,maxlen=maxlen)
 
 from sklearn.model_selection import train_test_split
 X_train, X_valid, y_train, y_valid = train_test_split(X,y,test_size=0.1,random_state=23)
@@ -44,8 +45,11 @@ for word, i in tqdm(word_index.items()):
     if embedding_vector is not None: embedding_matrix[i] = embedding_vector
 
 
-from models.LSTM.model import Lstm
 
-model = Lstm(maxlen=max_text_len,max_features=max_features,embed_size=embed_size)
+model = Lstm(maxlen=maxlen,max_features=max_features,embed_size=embed_size)
+model.summary()
 model.compile(loss = "binary_crossentropy", optimizer = 'adam',  metrics = ["accuracy"])
 
+ckpt = ModelCheckpoint('src/models/LSTM/model.hdf5',save_best_only=True, verbose=True)
+
+model.fit(X_train, y_train, validation_data=(X_valid,y_valid), epochs=1, batch_size=256,callbacks=[ckpt],verbose=True)
