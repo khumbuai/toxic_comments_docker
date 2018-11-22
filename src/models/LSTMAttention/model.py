@@ -5,10 +5,10 @@ from keras.layers import Dense, Embedding, Input
 from keras.layers import LSTM, Bidirectional, Dropout
 import keras.backend as K
 
-from backend_flask.custom_layers import Attention
+from src.models.LSTMAttention.custom_layers import Attention
 
 
-def BidLstm(maxlen, max_features, embed_size):
+def LSTMAttention(maxlen, max_features, embed_size):
     inp = Input(shape=(maxlen, ))
     x = Embedding(max_features, embed_size,
                   trainable=False)(inp)
@@ -24,16 +24,7 @@ def BidLstm(maxlen, max_features, embed_size):
     return model, attention_layer.attention_weights
 
 
-def evaluate_attention(model, attention_weights, input_sequence):
-    sess = K.get_session()
-    return sess.run(attention_weights, feed_dict={model.input: input_sequence})
-
-
 if __name__ == '__main__':
-    model, attention_weights = BidLstm(maxlen=150, max_features=100000, embed_size=300)
-    model.load_weights('assets/model.hdf5')
+    model, attention_weights = LSTMAttention(maxlen=150, max_features=100000, embed_size=300)
+    #model.load_weights('assets/model.hdf5')
     model.summary()
-
-    input_sequence = np.array([[i for i in range(150)]])
-
-    print(evaluate_attention(model, attention_weights, input_sequence))
