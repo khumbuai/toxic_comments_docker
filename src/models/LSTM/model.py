@@ -5,9 +5,9 @@ from keras.engine.topology import Layer
 from keras import initializers, regularizers, constraints
 
 
-def Lstm(maxlen, max_features, embed_size):
+def Lstm(maxlen, max_features, embed_size, embedding_matrix):
     inp = Input(shape=(maxlen, ))
-    x = Embedding(max_features, embed_size,
+    x = Embedding(max_features, embed_size, weights=[embedding_matrix],
                   trainable=False)(inp)
     x = LSTM(64, return_sequences=True)(x)
     x1 = GlobalAveragePooling1D()(x)

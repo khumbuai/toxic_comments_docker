@@ -49,7 +49,7 @@ for word, i in tqdm(word_index.items()):
 
 
 
-model = Lstm(maxlen=maxlen,max_features=max_features,embed_size=embed_size)
+model = Lstm(maxlen=maxlen,max_features=max_features, embedding_matrix=embedding_matrix, embed_size=embed_size)
 model.summary()
 model.compile(loss = "binary_crossentropy", optimizer = 'adam',  metrics = ["accuracy"])
 

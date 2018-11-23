@@ -1,6 +1,6 @@
-maxlen=150
-max_features=100000
-embed_size=300
+maxlen = 150
+max_features = 100000
+embed_size = 300
 
 EMBEDDING_FILE = "../../assets/crawl-300d-2M.vec"
 TRAIN_FILENAME = "../../assets/train.csv"
