@@ -2,14 +2,20 @@ from src.models.LSTM.preprocess import preprocess
 from keras.models import load_model
 import pickle
 from keras.preprocessing.sequence import pad_sequences
+import keras.backend as K
+import tensorflow as tf
 import numpy as np
 
 
 class ToxicLSTMModel:
 
     def __init__(self):
+
+        # this is key : save the graph after loading the model
+
         self.dir = 'src/models/LSTM/'
         self.model = load_model(self.dir + 'model.hdf5')
+        self.graph = tf.get_default_graph()
         self.preprocess = preprocess
         self.tokenizer = self.load_tokenizer()
         self.maxlen = 150
@@ -17,7 +23,10 @@ class ToxicLSTMModel:
 
     def predict(self,text):
         X = self.transform_to_input(text)
-        pred = self.model.predict(X)[0]
+        with self.graph.as_default():
+            pred = self.model.predict(X)[0]
+
+
         pred = list(np.round(pred,2))
         result = {self.categories[i]:str(pred[i]) for i in range(len(pred))}
 
