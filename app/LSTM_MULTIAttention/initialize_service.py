@@ -5,8 +5,6 @@ predictor = ToxicMultiAttentionModel(dir='../src/models/LSTM_MultiAttention/')
 
 
 def predict_on_text(raw_text):
-    import keras.backend as K
-    K.clear_session()
     try:
         predictions = predictor.predict(raw_text)
 
