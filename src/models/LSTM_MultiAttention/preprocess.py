@@ -1,7 +1,6 @@
 import re
 from nltk import word_tokenize
 
-
 def preprocess(comment):
     comment = comment.replace('&', ' and ')
     comment = comment.replace('0', ' zero ')
@@ -23,4 +22,4 @@ def preprocess(comment):
     comment = re.sub(r"\\", "", comment)
     comment = word_tokenize(comment)
     comment = " ".join(word for word in comment)
-    return comment.strip()
+    return comment.strip().lower()

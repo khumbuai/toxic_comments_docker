@@ -12,4 +12,4 @@ RUN python -m nltk.downloader punkt
 EXPOSE 5001
 #CMD flask run --host=0.0.0.0
 ENTRYPOINT ["python"]
-CMD ["main.py"]
+CMD ["app/app.py"]
