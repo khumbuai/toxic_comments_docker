@@ -15,6 +15,7 @@ CORS(app)
 @app.route('/', methods=['POST', 'GET'])
 #@cross_origin(["http://www.khumbu.ai", "https://www.khumbu.ai"])
 def predict():
+    print(request.get_json())
     try:
         text = request.get_json()['data']
     except KeyError:
@@ -37,8 +38,8 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    #app.run(port=5001, debug=True)
 
     # Serve the app with gevent
-    #http_server = WSGIServer(('', 5001), app)
-    #http_server.serve_forever()
+    http_server = WSGIServer(('', 5001), app)
+    http_server.serve_forever()

@@ -21,6 +21,12 @@ from src.models.LSTMAttention.config import maxlen, max_features, embed_size
 from src.models.LSTM_MultiAttention.model import LSTM_MultiAttentions
 
 
+def softmax(x):
+    """Compute softmax values for each sets of scores in x."""
+    e_x = np.exp(x - np.max(x))
+    return e_x / e_x.sum()
+
+
 class ToxicMultiAttentionModel():
     def __init__(self, dir='./'):
         self.dir = dir
@@ -65,13 +71,31 @@ class ToxicMultiAttentionModel():
         preds_as_dict = {'probabilities': pred}
         return preds_as_dict
 
+    def _trim_attentions_to_correct_length(self, attentions, words):
+        trimmed_attentions = []
+        for attention in attentions:
+            trimmed_attentions.append(attention[0, -len(words):, 0].tolist())
+        return trimmed_attentions
+
+    def _cool_down(self, attentions, T=0.001):
+        cooled_attentions = []
+        for attention in attentions:
+            cooled_attentions.append(softmax(np.array(attention) / T))
+        return cooled_attentions
+
+    def _convert_2_list(self, attentions):
+        for i, attention in enumerate(attentions):
+            attentions[i] = list(attention)
+        return attentions
+
     def _predict_attentions(self, input_seq, words):
         attentions = self.evaluate_attention(input_seq)
         # grab the last attions, note that we pre-padded the input sequence
-        for i, attention in enumerate(attentions):
-            attentions[i] = attention[0, -len(words):, 0].tolist()
+        attentions = self._trim_attentions_to_correct_length(attentions, words)
+        attentions = self._cool_down(attentions)
+        attentions = self._convert_2_list(attentions)
 
-        return {"attn_dists": list(attentions)}
+        return {"attn_dists": attentions}
 
 
 if __name__ == '__main__':

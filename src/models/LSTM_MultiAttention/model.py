@@ -1,5 +1,5 @@
 from keras.models import Model
-from keras.layers import Dense, Embedding, Input
+from keras.layers import Dense, Embedding, Input, SpatialDropout1D
 from keras.layers import CuDNNLSTM, Bidirectional, Dropout, TimeDistributed, concatenate, Lambda
 import keras.backend as K
 
@@ -11,7 +11,7 @@ def LSTM_MultiAttentions(maxlen, max_features, embed_size, embedding_matrix):
     x = Embedding(max_features, embed_size, weights=[embedding_matrix],
                   trainable=False)(inp)
     x = Bidirectional(CuDNNLSTM(300, return_sequences=True))(x)
-
+    x = SpatialDropout1D(0.3)(x)
     attention_layers = [Attention(maxlen) for _ in range(6)]
     attentions = [attention_layer(x) for attention_layer in attention_layers]
     attentions = [Lambda(lambda x: K.expand_dims(x, axis=-1))(attention) for attention in attentions]
