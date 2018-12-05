@@ -3,9 +3,10 @@ curl -H "Content-Type: application/json" -d '{"data":"I hate you"}' http://local
 '''
 
 from flask import Flask, current_app, request, jsonify, abort
-from LSTM_MULTIAttention.initialize_service import predict_on_text
 from flask_cors import CORS, cross_origin
 from gevent.pywsgi import WSGIServer
+
+from app.LSTM_MultiAttention.initialize_service import predict_on_text
 
 app = Flask(__name__)
 CORS(app)
@@ -13,7 +14,7 @@ CORS(app)
 
 
 @app.route('/', methods=['POST', 'GET'])
-#@cross_origin(["http://www.khumbu.ai", "https://www.khumbu.ai"])
+@cross_origin(["http://www.khumbu.ai", "https://www.khumbu.ai"])
 def predict():
     print(request.get_json())
     try:

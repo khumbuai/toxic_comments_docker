@@ -1,6 +1,6 @@
 from src.models.LSTM_MultiAttention.predict import ToxicMultiAttentionModel
 
-predictor = ToxicMultiAttentionModel(dir='../src/models/LSTM_MultiAttention/')
+predictor = ToxicMultiAttentionModel(dir='src/models/LSTM_MultiAttention/')
 
 
 def predict_on_text(raw_text):
