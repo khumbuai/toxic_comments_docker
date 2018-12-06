@@ -14,7 +14,8 @@ CORS(app)
 
 
 @app.route('/', methods=['POST', 'GET'])
-@cross_origin(["http://www.khumbu.ai", "https://www.khumbu.ai"])
+@cross_origin(["http://www.khumbu.ai", "https://www.khumbu.ai",
+               "https://www.khumbu.ai/toxic_comments.html", "http://www.khumbu.ai/toxic_comments.html"])
 def predict():
     print(request.get_json())
     try:

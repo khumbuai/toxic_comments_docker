@@ -11,7 +11,6 @@ var json_file ='{' + input_text + probabilities + toxic_labels + attentions + '}
 '''
 import numpy as np
 import pickle
-import matplotlib.pyplot as plt
 
 import keras.backend as K
 from keras.preprocessing.sequence import pad_sequences
